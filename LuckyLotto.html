@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LUCKY LOTTO!</title>
+    <style>
+        #main-div{
+            text-align: center;
+        }
+
+        #result-print-div{
+            display: flex;
+            justify-content: center;
+            align-items: center;    
+        }
+
+        table{
+            border-left: 2px solid #369;
+            border-style: none;
+        }
+
+        tr:nth-child(odd){
+            background-color: #f0f0f0;
+        }
+
+        td{
+            text-align: center;
+            width: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-div">
+        <h1></h1>
+        <button id="new-row">Click!</button>
+        <div id="result-print-div">
+            <table>
+                <tbody id="result-table-tbody">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // 기본 옵션에 대한 객체 생성
+        // name: 페이지 제목
+        // count: 1회차당 번호 생성 개수
+        // maxNumber: 나올 수 있는 번호의 최대 치(45)
+        const SETTING = {
+            name: 'lucky lotto',
+            count: 6,
+            maxNumber: 45
+        };
+
+        // SETTING 객체의 요소를 가져와서 바로 변수 선언
+        let {count, maxNumber, name} = SETTING;
+
+        // 제목 작성 (처음 1회만 사용되는 즉시실행 함수)
+        (()=>{
+            let mainText = "Welcome to '" + name + "' :-)";
+            document.querySelector('h1').innerText = mainText;
+        })();
+
+        // 1개의 번호 생성되는 함수
+        const getRandomNumber = (maxNumber) => {
+            return Math.floor(Math.random()*maxNumber + 1);
+        }
+
+        // 중복되지 않는 6개의 번호생성
+        const lottoNumSet = (count, maxNumber) => {
+            const numSet = new Set();
+            while(numSet.size != count){
+                numSet.add(getRandomNumber(maxNumber));
+            }
+            return numSet;
+        }
+        
+        // 버튼 클릭 이벤트 발생
+        // 1개의 row 당 1회차의 로또 번호(총 6개의 td) 생성
+        document.querySelector('#new-row').addEventListener('click', function(){
+
+            // row 생성 및 회차 표시
+            let lastRow = document.getElementById('result-table-tbody').childElementCount+1;
+            let tableTrHtml = '<tr id="tr_'+lastRow+'"><th>제 '+(lastRow)+'회</th></tr>';
+
+            
+            document.querySelector("#result-table-tbody").insertAdjacentHTML('beforeend', tableTrHtml);
+            let resultNum = lottoNumSet(count, maxNumber);
+            resultNum.forEach(element => {
+                let trTd = '<td>'+element+'</td>';
+                //document.querySelector('#tr_'+lastRow).insertAdjacentHTML('beforeend',trTd);
+                document.querySelector('#tr_'+lastRow).innerHTML += trTd;
+            });
+        });
+
+    </script>
+</body>
+</html>
