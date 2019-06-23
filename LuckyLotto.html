@@ -33,7 +33,7 @@
 </head>
 <body>
     <div id="main-div">
-        <h1></h1>
+        <h1 id="page_title"></h1>
         <button id="new-row">Click!</button>
         <div id="result-print-div">
             <table>
@@ -60,8 +60,11 @@
 
         // 제목 작성 (처음 1회만 사용되는 즉시실행 함수)
         (()=>{
-            let mainText = "Welcome to '" + name + "' :-)";
-            document.querySelector('h1').innerText = mainText;
+                //Template String
+            //let mainText = "Welcome to '" + name + "' :-)";
+            let mainText = `Welcome to '${name}' :-)`;
+            //document.querySelector('h1').innerText = mainText;
+            document.getElementById('page_title').innerText = mainText;
         })();
 
         // 1개의 번호 생성되는 함수
@@ -71,11 +74,24 @@
 
         // 중복되지 않는 6개의 번호생성
         const lottoNumSet = (count, maxNumber) => {
+            // compare: 로또 번호를 보기좋게끔 크기 기준으로 정렬해준다.
+            const compare = (a, b)=>a-b; 
             const numSet = new Set();
             while(numSet.size != count){
                 numSet.add(getRandomNumber(maxNumber));
             }
-            return numSet;
+            let convertArray = Array.from(numSet);
+            convertArray.sort(compare);
+
+            // 한자리의 숫자가 나왔을 시에 앞에 0을 붙여준다.
+            let i = 0;
+            do{
+                if (convertArray[i]<10) {
+                    convertArray[i] = "0"+convertArray[i].toString()
+                }
+                i++;
+            }while(i<6)            
+            return convertArray;
         }
         
         // 버튼 클릭 이벤트 발생
@@ -84,18 +100,22 @@
 
             // row 생성 및 회차 표시
             let lastRow = document.getElementById('result-table-tbody').childElementCount+1;
-            let tableTrHtml = '<tr id="tr_'+lastRow+'"><th>제 '+(lastRow)+'회</th></tr>';
-
             
+                //Template String
+            //let tableTrHtml = '<tr id="tr_'+lastRow+'"><th>제 '+(lastRow)+'회</th></tr>';
+            let tableTrHtml = `<tr id="tr_${lastRow}"><th>제 ${lastRow}회</th></tr>`;
+
             document.querySelector("#result-table-tbody").insertAdjacentHTML('beforeend', tableTrHtml);
             let resultNum = lottoNumSet(count, maxNumber);
             resultNum.forEach(element => {
-                let trTd = '<td>'+element+'</td>';
+
+                    //Template String
+                //let trTd = '<td>'+element+'</td>';
+                let trTd = `<td>${element}</td>`;
                 //document.querySelector('#tr_'+lastRow).insertAdjacentHTML('beforeend',trTd);
                 document.querySelector('#tr_'+lastRow).innerHTML += trTd;
             });
         });
-
     </script>
 </body>
 </html>
